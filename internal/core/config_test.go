@@ -296,6 +296,12 @@ func TestGroupNameForPathApplyDeepestMatch(t *testing.T) {
 			"doublestar": {
 				Paths: []string{"**/doublestar.md"},
 			},
+			"doublestar parent": {
+				Paths: []string{"doublestar/**"},
+			},
+			"doublestar child": {
+				Paths: []string{"doublestar/child/**"},
+			},
 		},
 	}
 
@@ -322,6 +328,10 @@ func TestGroupNameForPathApplyDeepestMatch(t *testing.T) {
 	name, err = config.GroupNameForPath("double/star/doublestar.md")
 	assert.Nil(t, err)
 	assert.Equal(t, name, "doublestar")
+
+	name, err = config.GroupNameForPath("doublestar/child/test.md")
+	assert.Nil(t, err)
+	assert.Equal(t, name, "doublestar child")
 }
 
 func TestParseMergesGroupConfig(t *testing.T) {
