@@ -3,7 +3,6 @@ package core
 import (
 	"fmt"
 	"path/filepath"
-	"strings"
 
 	"github.com/bmatcuk/doublestar/v4"
 	toml "github.com/pelletier/go-toml"
@@ -119,14 +118,11 @@ func (c Config) GroupNameForPath(path string) (string, error) {
 
 	for name, config := range c.Groups {
 		for _, groupPath := range config.Paths {
+			groupPath = filepath.Join(groupPath, "**")
 			matches, err := doublestar.Match(groupPath, path)
 			if err != nil {
 				return "", errors.Wrapf(err, "failed to match group %s to %s", name, path)
 			} else if matches {
-				// Early return if an exact match
-				return name, nil
-			}
-			if strings.HasPrefix(path, groupPath+"/") {
 				// If the match is partial, find the longest prefix overlap
 				if len(groupPath) > len(longestMatch) {
 					longestMatch = groupPath
